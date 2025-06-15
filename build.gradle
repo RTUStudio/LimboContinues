@@ -1,0 +1,74 @@
+plugins {
+  id "java"
+  id "io.freefair.lombok" version "8.11"
+  id "com.gradleup.shadow" version "9.0.0-beta4"
+  id "xyz.jpenilla.run-velocity" version "2.3.1"
+}
+
+version = plugin_version
+
+repositories {
+  mavenCentral()
+  maven {
+    name = "papermc"
+    url = "https://repo.papermc.io/repository/maven-public/"
+  }
+  maven {
+    name = "elytrium"
+    url = "https://maven.elytrium.net/repo/"
+  }
+  maven {
+    name = "sonatype"
+    url = "https://oss.sonatype.org/content/groups/public/"
+  }
+}
+
+dependencies {
+  compileOnly "net.elytrium.limboapi:api:$limbo_api_version"
+  compileOnly "com.velocitypowered:velocity-api:$velocity_version"
+  annotationProcessor "com.velocitypowered:velocity-api:$velocity_version"
+  compileOnly "com.velocitypowered:velocity-proxy:$velocity_version"
+  compileOnly "io.netty:netty-handler:$netty_version"
+  implementation "net.elytrium:serializer:$serializer_version"
+}
+
+build {
+  dependsOn(shadowJar)
+}
+
+shadowJar {
+  getArchiveClassifier().set("")
+
+  relocate("net.elytrium.commons.velocity", "net.elytrium.limboapi.thirdparty.commons.velocity")
+  relocate("net.elytrium.commons.kyori", "net.elytrium.limboapi.thirdparty.commons.kyori")
+  relocate("net.elytrium.commons.config", "net.elytrium.limboapi.thirdparty.commons.config")
+}
+
+runVelocity {
+  velocityVersion(velocity_version)
+}
+
+processResources {
+  def props = [
+          version: plugin_version,
+          name   : plugin_name,
+          author : plugin_author,
+          main   : plugin_main
+  ]
+  inputs.properties props
+  filteringCharset "UTF-8"
+  filesMatching("velocity-plugin.json") {
+    expand props
+  }
+}
+
+java {
+  def javaVersion = JavaVersion.toVersion(java_version as Integer)
+  sourceCompatibility = javaVersion
+  targetCompatibility = javaVersion
+  if (JavaVersion.current() < javaVersion) toolchain.languageVersion = JavaLanguageVersion.of(java_version as Integer)
+}
+
+tasks.withType(JavaCompile).configureEach {
+  options.release = java_version as Integer
+}

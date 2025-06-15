@@ -1,0 +1,11 @@
+{
+  "id": "limbocontinues",
+  "name": "${name}",
+  "version": "${version}",
+  "description": "LimboContinues - Queue and Restart server with limbo",
+  "authors": [
+    "${author}"
+  ],
+  "dependencies": [ ],
+  "main": "${main}"
+}
