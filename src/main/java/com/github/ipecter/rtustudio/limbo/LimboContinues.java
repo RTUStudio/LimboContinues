@@ -11,6 +11,7 @@ import com.velocitypowered.api.command.CommandMeta;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
+import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -44,6 +45,18 @@ public class LimboContinues {
         LinkedList<LimboPlayer> list = new LinkedList<>(priority);
         list.addAll(players);
         return list;
+    }
+
+    public int indexOf(LimboPlayer player) {
+        LinkedList<LimboPlayer> list = getAllPlayers();
+        for (int index = 0; index < list.size(); index++) {
+            LimboPlayer lp = list.get(index);
+            if (lp == null) continue;
+            Player pp = lp.getProxyPlayer();
+            if (pp.getUniqueId().equals(player.getProxyPlayer().getUniqueId())) return index;
+        }
+        verbose(player + " is no found!");
+        return -1;
     }
 
     @Getter

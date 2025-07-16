@@ -63,7 +63,7 @@ public class ReconnectServer {
             }
         }
         this.limbo = this.factory.createLimbo(world)
-                .setName("LimboContinuous_Reconnect")
+                .setName("LimboContinues_Reconnect")
                 .setShouldRejoin(true)
                 .setShouldRespawn(true)
                 .setGameMode(wc.getGamemode())

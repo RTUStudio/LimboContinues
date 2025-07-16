@@ -63,7 +63,7 @@ public class QueueServer {
             }
         }
         this.limbo = this.factory.createLimbo(world)
-                .setName("LimboContinuous_Queue")
+                .setName("LimboContinues_Reconnect")
                 .setShouldRejoin(true)
                 .setShouldRespawn(true)
                 .setGameMode(wc.getGamemode())

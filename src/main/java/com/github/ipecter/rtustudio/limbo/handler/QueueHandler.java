@@ -20,7 +20,6 @@ import java.util.concurrent.TimeUnit;
 public class QueueHandler extends QueuedHandler {
 
     private final QueueConfig.Config config;
-    private final SettingConfig.Config setting;
     private final PingOptions pingOptions;
 
     private final PlaySound queueSound;
@@ -33,7 +32,6 @@ public class QueueHandler extends QueuedHandler {
     public QueueHandler(LimboContinues plugin, RegisteredServer server) {
         super(plugin, server);
         this.config = plugin.getQueue().getConfig();
-        this.setting = plugin.getSettingConfig().getConfig();
         this.pingOptions = PingOptions.builder().timeout(Duration.ofMillis(config.getServer().getTimeout())).build();
         int x = config.getWorld().getLocation().getX();
         int y = config.getWorld().getLocation().getY();
@@ -99,21 +97,21 @@ public class QueueHandler extends QueuedHandler {
                         player.disconnect(server);
                     }, serverConfig.getDelay(), TimeUnit.MILLISECONDS);
                 } else {
-                    int i = list.indexOf(player);
+                    int index = plugin.indexOf(player);
                     Title title = Title.title(
                             LimboContinues.getSerializer().deserialize(
-                                    MessageFormat.format(config.getQueue().getTitle().getTitle(), i + 1)),
+                                    MessageFormat.format(config.getQueue().getTitle().getTitle(), index + 1)),
                             LimboContinues.getSerializer().deserialize(
-                                    MessageFormat.format(config.getQueue().getTitle().getSubtitle(), i + 1)),
+                                    MessageFormat.format(config.getQueue().getTitle().getSubtitle(), index + 1)),
                             Title.Times.times(Duration.ZERO, Duration.ofMillis(30000), Duration.ZERO));
                     Component message = LimboContinues.getSerializer().deserialize(
-                            MessageFormat.format(config.getQueue().getMessage(), i + 1));
+                            MessageFormat.format(config.getQueue().getMessage(), index + 1));
                     player.getProxyPlayer().showTitle(title);
-                    if (this.remain != i) {
+                    if (this.remain != index) {
                         player.getProxyPlayer().sendMessage(message);
                         player.writePacket(queueSound);
                     }
-                    this.remain = i;
+                    this.remain = index;
                     this.state = State.QUEUE;
                     player.getScheduledExecutor().schedule(this::tick, serverConfig.getCheck(), TimeUnit.MILLISECONDS);
                 }

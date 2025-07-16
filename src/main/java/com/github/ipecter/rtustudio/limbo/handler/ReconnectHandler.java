@@ -67,14 +67,13 @@ public class ReconnectHandler extends QueuedHandler {
                 this.state = State.OFFLINE;
                 player.getScheduledExecutor().schedule(this::tick, serverConfig.getCheck(), TimeUnit.MILLISECONDS);
             } else {
-                LimboPlayer first = list.getFirst();
                 Title title = Title.title(
                         LimboContinues.getSerializer().deserialize(config.getConnect().getTitle().getTitle()),
                         LimboContinues.getSerializer().deserialize(config.getConnect().getTitle().getSubtitle()),
                         Title.Times.times(Duration.ZERO, Duration.ofMillis(30000), Duration.ZERO));
                 Component message = LimboContinues.getSerializer().deserialize(config.getConnect().getMessage());
-                first.getProxyPlayer().showTitle(title);
-                if (this.state != State.CONNECT) first.getProxyPlayer().sendMessage(message);
+                player.getProxyPlayer().showTitle(title);
+                if (this.state != State.CONNECT) player.getProxyPlayer().sendMessage(message);
                 this.state = State.CONNECT;
                 player.getScheduledExecutor().schedule(() -> {
                     player.writePacket(connectSound);

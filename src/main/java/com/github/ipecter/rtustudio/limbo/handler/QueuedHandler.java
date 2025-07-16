@@ -27,9 +27,17 @@ public abstract class QueuedHandler implements LimboSessionHandler {
     public void onSpawn(Limbo server, LimboPlayer player) {
         this.tick = true;
         this.player = player;
+        plugin.verbose("Player '" + player.getProxyPlayer().getUsername() + "' spawned queue.");
         if (player.getProxyPlayer().hasPermission("limbocontinues.priority")) {
-            plugin.getPriority().add(player);
-        } else plugin.getPlayers().add(player);
+            if (plugin.getPriority().add(player)) {
+                plugin.verbose("Added player '" + player.getProxyPlayer().getUsername() + "' to priority queue.");
+            } else
+                plugin.verbose("Not added player '" + player.getProxyPlayer().getUsername() + "' to priority queue.");
+        } else {
+            if (plugin.getPlayers().add(player)) {
+                plugin.verbose("Added player '" + player.getProxyPlayer().getUsername() + "' to queue.");
+            } else plugin.verbose("Not added player '" + player.getProxyPlayer().getUsername() + "' to queue.");
+        }
         onJoin(server, player);
     }
 

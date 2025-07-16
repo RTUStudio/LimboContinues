@@ -22,6 +22,7 @@ public class ServerPing {
         if (mp.isEnabled()) {
             com.velocitypowered.api.proxy.server.ServerPing.Builder pong = e.getPing().asBuilder();
             pong.maximumPlayers(mp.getSize());
+            //pong.onlinePlayers(); TODO: 접속한 유저 표시
             e.setPing(pong.build());
         }
     }
