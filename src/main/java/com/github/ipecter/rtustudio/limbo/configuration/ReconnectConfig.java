@@ -34,15 +34,13 @@ public class ReconnectConfig {
 
         private static final SerializerConfig CONFIG = new SerializerConfig.Builder().setCommentValueIndent(1).build();
         @Comment(value = @CommentValue("Send player to the limbo, if disconnect reason contains this text (using regex)"))
-        private final String trigger = "((?i)^(server closed|server is restarting|multiplayer\\.disconnect\\.server_shutdown))+$";
-        private final Server server = new Server();
-        @Comment(value = @CommentValue("Send to limbo or use current server's world"))
-        private final boolean useLimbo = false;
+        private String trigger = "((?i)^(server closed|server is restarting|multiplayer\\.disconnect\\.server_shutdown))*$";
+        private Server server = new Server();
         @Comment(value = @CommentValue("Require permission to reconnect (limboreconnect.reconnect)"))
-        private final boolean requirePermission = false;
-        private final World world = new World();
-        private final Offline offline = new Offline();
-        private final Connect connect = new Connect();
+        private boolean requirePermission = false;
+        private World world = new World();
+        private Offline offline = new Offline();
+        private Connect connect = new Connect();
 
         public Config() {
             super(CONFIG);
@@ -51,16 +49,16 @@ public class ReconnectConfig {
         @Getter
         public static class Offline {
 
-            private final String message = "Server is restarting!";
+            private String message = "Server is restarting!";
 
-            private final Title title = new Title();
+            private Title title = new Title();
             @Serializer(PlaySoundSerializer.class)
-            private final PlaySound sound = new PlaySound("entity.experience_orb.pickup", 0.5f, 0.5f);
+            private PlaySound sound = new PlaySound("entity.experience_orb.pickup", 0.5f, 0.5f);
 
             @Getter
             public static class Title {
-                private final String title = "";
-                private final String subtitle = "<gold>Server is restarting...</gold>";
+                private String title = "";
+                private String subtitle = "<gold>Server is restarting...</gold>";
             }
 
         }
@@ -68,16 +66,16 @@ public class ReconnectConfig {
         @Getter
         public static class Connect {
 
-            private final String message = "Connecting!";
+            private String message = "Connecting!";
 
-            private final Title title = new Title();
+            private Title title = new Title();
             @Serializer(PlaySoundSerializer.class)
-            private final PlaySound sound = new PlaySound("entity.player.levelup", 1, 1);
+            private PlaySound sound = new PlaySound("entity.player.levelup", 1, 1);
 
             @Getter
             public static class Title {
-                private final String title = "";
-                private final String subtitle = "<green>Connecting...</green>";
+                private String title = "";
+                private String subtitle = "<green>Connecting...</green>";
             }
 
         }
@@ -85,11 +83,11 @@ public class ReconnectConfig {
         @Getter
         public static class Server {
             @Comment(value = @CommentValue("Server status check interval in milliseconds"))
-            private final long check = 1000;
+            private long check = 1000;
             @Comment(value = @CommentValue("Server status check timeout in milliseconds"))
-            private final long timeout = 500;
+            private long timeout = 500;
             @Comment(value = @CommentValue("Connect delay after server startup"))
-            private final long delay = 2000;
+            private long delay = 2000;
         }
 
 
@@ -97,36 +95,36 @@ public class ReconnectConfig {
         public static class World {
 
             @Comment(value = @CommentValue("Dimensions: OVERWORLD, NETHER, THE_END"))
-            private final String dimension = "OVERWORLD";
-            private final World.Schematic schematic = new World.Schematic();
-            private final int lightLevel = 15;
-            private final GameMode gamemode = GameMode.SPECTATOR;
-            private final World.Location location = new World.Location();
+            private String dimension = "OVERWORLD";
+            private World.Schematic schematic = new World.Schematic();
+            private int lightLevel = 15;
+            private GameMode gamemode = GameMode.SPECTATOR;
+            private World.Location location = new World.Location();
 
             @Getter
             public static class Location {
-                private final int x = 0;
-                private final int y = 100;
-                private final int z = 0;
-                private final float pitch = 0;
-                private final float yaw = 90;
+                private int x = 0;
+                private int y = 100;
+                private int z = 0;
+                private float pitch = 0;
+                private float yaw = 90;
             }
 
             @Getter
             public static class Schematic {
                 @Comment(value = @CommentValue("Load world from file"))
-                private final boolean load = false;
+                private boolean load = false;
                 @Comment(value = @CommentValue("Type: SCHEMATIC, WORLDEDIT_SCHEM, STRUCTURE"))
-                private final BuiltInWorldFileType type = BuiltInWorldFileType.WORLDEDIT_SCHEM;
+                private BuiltInWorldFileType type = BuiltInWorldFileType.WORLDEDIT_SCHEM;
                 @Comment(value = @CommentValue("Schematic file name"))
-                private final String file = "world.schem";
-                private final World.Schematic.Offset offset = new World.Schematic.Offset();
+                private String file = "world.schem";
+                private World.Schematic.Offset offset = new World.Schematic.Offset();
 
                 @Getter
                 public static class Offset {
-                    private final int x = 0;
-                    private final int y = 100;
-                    private final int z = 0;
+                    private int x = 0;
+                    private int y = 100;
+                    private int z = 0;
                 }
             }
         }

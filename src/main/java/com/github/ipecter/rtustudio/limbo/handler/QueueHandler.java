@@ -2,6 +2,7 @@ package com.github.ipecter.rtustudio.limbo.handler;
 
 import com.github.ipecter.rtustudio.limbo.LimboContinues;
 import com.github.ipecter.rtustudio.limbo.configuration.QueueConfig;
+import com.github.ipecter.rtustudio.limbo.configuration.SettingConfig;
 import com.github.ipecter.rtustudio.limbo.protocol.packets.PlaySound;
 import com.velocitypowered.api.proxy.server.PingOptions;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
@@ -19,6 +20,7 @@ import java.util.concurrent.TimeUnit;
 public class QueueHandler extends QueuedHandler {
 
     private final QueueConfig.Config config;
+    private final SettingConfig.Config setting;
     private final PingOptions pingOptions;
 
     private final PlaySound queueSound;
@@ -31,6 +33,7 @@ public class QueueHandler extends QueuedHandler {
     public QueueHandler(LimboContinues plugin, RegisteredServer server) {
         super(plugin, server);
         this.config = plugin.getQueue().getConfig();
+        this.setting = plugin.getSettingConfig().getConfig();
         this.pingOptions = PingOptions.builder().timeout(Duration.ofMillis(config.getServer().getTimeout())).build();
         int x = config.getWorld().getLocation().getX();
         int y = config.getWorld().getLocation().getY();
@@ -75,9 +78,11 @@ public class QueueHandler extends QueuedHandler {
                 player.getScheduledExecutor().schedule(this::tick, serverConfig.getCheck(), TimeUnit.MILLISECONDS);
             } else {
                 boolean isFull = false;
-                if (ping.getPlayers().isPresent()) {
+                QueueConfig.Config.Queue.MaxPlayer mp = config.getQueue().getMaxPlayer();
+                if (ping.getPlayers().isPresent() && !mp.getBypass().contains(player.getProxyPlayer().getUsername())) {
                     ServerPing.Players players = ping.getPlayers().get();
-                    isFull = players.getOnline() >= players.getMax();
+                    int max = mp.isEnabled() ? Math.min(mp.getSize(), players.getMax()) : players.getMax();
+                    isFull = players.getOnline() >= max;
                 }
                 if (!(isFull || list.isEmpty())) {
                     Title title = Title.title(
@@ -97,12 +102,12 @@ public class QueueHandler extends QueuedHandler {
                     int i = list.indexOf(player);
                     Title title = Title.title(
                             LimboContinues.getSerializer().deserialize(
-                                    MessageFormat.format(config.getQueue().getTitle().getTitle(), i)),
+                                    MessageFormat.format(config.getQueue().getTitle().getTitle(), i + 1)),
                             LimboContinues.getSerializer().deserialize(
-                                    MessageFormat.format(config.getQueue().getTitle().getSubtitle(), i)),
+                                    MessageFormat.format(config.getQueue().getTitle().getSubtitle(), i + 1)),
                             Title.Times.times(Duration.ZERO, Duration.ofMillis(30000), Duration.ZERO));
                     Component message = LimboContinues.getSerializer().deserialize(
-                            MessageFormat.format(config.getQueue().getMessage(), i));
+                            MessageFormat.format(config.getQueue().getMessage(), i + 1));
                     player.getProxyPlayer().showTitle(title);
                     if (this.remain != i) {
                         player.getProxyPlayer().sendMessage(message);

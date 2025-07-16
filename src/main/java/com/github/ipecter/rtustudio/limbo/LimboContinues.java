@@ -3,6 +3,7 @@ package com.github.ipecter.rtustudio.limbo;
 import com.github.ipecter.rtustudio.limbo.command.ReloadCommand;
 import com.github.ipecter.rtustudio.limbo.configuration.SettingConfig;
 import com.github.ipecter.rtustudio.limbo.listener.PlayerLogin;
+import com.github.ipecter.rtustudio.limbo.listener.ServerPing;
 import com.github.ipecter.rtustudio.limbo.server.QueueServer;
 import com.github.ipecter.rtustudio.limbo.server.ReconnectServer;
 import com.google.inject.Inject;
@@ -53,7 +54,7 @@ public class LimboContinues {
     @Inject
     public LimboContinues(ProxyServer server, @DataDirectory Path dir) {
         this.server = server;
-        this.commandMeta = server.getCommandManager().metaBuilder("limboreconnect").plugin(this).build();
+        this.commandMeta = server.getCommandManager().metaBuilder("limbocontinues").plugin(this).build();
         this.dir = dir;
 
         this.settingConfig = new SettingConfig(this);
@@ -64,14 +65,21 @@ public class LimboContinues {
         return log;
     }
 
+    public void verbose(String message) {
+        if (settingConfig.getConfig().isDebug()) {
+            log.info(message);
+        }
+    }
+
     @Subscribe
     private void onInitialize(ProxyInitializeEvent event) {
         reconnect = new ReconnectServer(this);
         queue = new QueueServer(this);
         reload();
 
-
         server.getEventManager().register(this, new PlayerLogin(this));
+        server.getEventManager().register(this, new ServerPing(this));
+
         server.getCommandManager().register(commandMeta, new ReloadCommand(this));
     }
 

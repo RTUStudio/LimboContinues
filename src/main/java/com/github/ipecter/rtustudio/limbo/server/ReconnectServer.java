@@ -4,7 +4,6 @@ import com.github.ipecter.rtustudio.limbo.LimboContinues;
 import com.github.ipecter.rtustudio.limbo.configuration.ReconnectConfig;
 import com.github.ipecter.rtustudio.limbo.handler.ReconnectHandler;
 import com.github.ipecter.rtustudio.limbo.protocol.packets.PlaySound;
-import com.velocitypowered.api.network.ProtocolVersion;
 import com.velocitypowered.api.plugin.PluginContainer;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
@@ -20,7 +19,6 @@ import net.elytrium.limboapi.api.chunk.Dimension;
 import net.elytrium.limboapi.api.chunk.VirtualWorld;
 import net.elytrium.limboapi.api.file.WorldFile;
 import net.elytrium.limboapi.api.protocol.PacketDirection;
-import net.elytrium.limboapi.api.protocol.packets.PacketMapping;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -66,28 +64,10 @@ public class ReconnectServer {
         }
         this.limbo = this.factory.createLimbo(world)
                 .setName("LimboContinuous_Reconnect")
-                .setShouldRejoin(getConfig().isUseLimbo())
-                .setShouldRespawn(getConfig().isUseLimbo())
+                .setShouldRejoin(true)
+                .setShouldRespawn(true)
                 .setGameMode(wc.getGamemode())
-                .registerPacket(PacketDirection.CLIENTBOUND, PlaySound.class, PlaySound::new, new PacketMapping[]{
-                        new PacketMapping(0x29, ProtocolVersion.MINECRAFT_1_7_2, true),
-                        new PacketMapping(0x19, ProtocolVersion.MINECRAFT_1_9, true),
-                        new PacketMapping(0x1a, ProtocolVersion.MINECRAFT_1_13, true),
-                        new PacketMapping(0x19, ProtocolVersion.MINECRAFT_1_14, true),
-                        new PacketMapping(0x1a, ProtocolVersion.MINECRAFT_1_15, true),
-                        new PacketMapping(0x19, ProtocolVersion.MINECRAFT_1_16, true),
-                        new PacketMapping(0x18, ProtocolVersion.MINECRAFT_1_16_2, true),
-                        new PacketMapping(0x19, ProtocolVersion.MINECRAFT_1_17, true),
-                        new PacketMapping(0x16, ProtocolVersion.MINECRAFT_1_19, true),
-                        new PacketMapping(0x17, ProtocolVersion.MINECRAFT_1_19_1, true),
-                        new PacketMapping(0x5e, ProtocolVersion.MINECRAFT_1_19_3, true),
-                        new PacketMapping(0x62, ProtocolVersion.MINECRAFT_1_19_4, true),
-                        new PacketMapping(0x64, ProtocolVersion.MINECRAFT_1_20_2, true),
-                        new PacketMapping(0x66, ProtocolVersion.MINECRAFT_1_20_3, true),
-                        new PacketMapping(0x68, ProtocolVersion.MINECRAFT_1_20_5, true),
-                        new PacketMapping(0x6f, ProtocolVersion.MINECRAFT_1_21_4, true),
-                        new PacketMapping(0x6e, ProtocolVersion.MINECRAFT_1_21_5, true),
-                });
+                .registerPacket(PacketDirection.CLIENTBOUND, PlaySound.class, PlaySound::new, PlaySound.MAPPINGS);
     }
 
 

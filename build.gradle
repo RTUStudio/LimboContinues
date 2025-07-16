@@ -14,12 +14,8 @@ repositories {
         url = "https://repo.papermc.io/repository/maven-public/"
     }
     maven {
-        name = "elytrium"
-        url = "https://maven.elytrium.net/repo/"
-    }
-    maven {
-        name = "sonatype"
-        url = "https://oss.sonatype.org/content/groups/public/"
+        name "elytriumRepo"
+        url "https://maven.elytrium.net/repo"
     }
 }
 
@@ -30,6 +26,9 @@ dependencies {
     compileOnly "com.velocitypowered:velocity-proxy:$velocity_version"
     compileOnly "io.netty:netty-handler:$netty_version"
     implementation "net.elytrium:serializer:$serializer_version"
+
+    compileOnly "org.projectlombok:lombok:1.18.38"
+    annotationProcessor "org.projectlombok:lombok:1.18.38"
 }
 
 build {
